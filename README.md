@@ -1,220 +1,62 @@
-# 📌 Pinterest Upload Manager
+# Privacy Policy
 
-A full-stack web application for managing and scheduling image uploads to Pinterest. Built with React, Node.js/Express, and PostgreSQL — fully containerized with Docker for zero-config setup.
+**Last Updated:** June 2026
 
----
+## PintAuto Privacy Policy
 
-## 🛠 Tech Stack
+PintAuto is an internal application developed and maintained by **Art Activities** to simplify the management and publishing of Pinterest content for books and educational products.
 
-| Layer        | Technology                     |
-| ------------ | ------------------------------ |
-| **Frontend** | React 18 + Vite                |
-| **Backend**  | Node.js 20 + Express           |
-| **Database** | PostgreSQL 16                  |
-| **Runtime**  | Docker & Docker Compose        |
-| **Dev DX**   | Nodemon (backend) + Vite HMR   |
+### Information We Collect
 
----
+When a user connects a Pinterest account, the application may access only the information required to provide its core functionality, including:
 
-## 📋 Prerequisites
+* Pinterest account identifier
+* Pinterest boards
+* Authorization tokens required by the Pinterest API
 
-You only need **two things** installed on your machine:
+The application does **not** collect passwords or Pinterest login credentials.
 
-- [Docker](https://docs.docker.com/get-docker/) (v20+)
-- [Docker Compose](https://docs.docker.com/compose/install/) (v2+, included with Docker Desktop)
+### How We Use Your Information
 
-> **Note:** No local Node.js, npm, or PostgreSQL installation required — everything runs inside containers.
+The collected information is used solely to:
 
----
+* Connect your Pinterest account.
+* Retrieve available Pinterest boards.
+* Publish Pins on your behalf when requested.
+* Improve the application's functionality.
 
-## 🚀 Quick Start
+### Data Storage
 
-```bash
-# 1. Clone the repository
-git clone <your-repo-url>
-cd pinterest-tool
+Authorization tokens and related account information are stored securely and are used only for authenticated Pinterest API requests.
 
-# 2. Copy the environment file
-cp .env.example .env
+Uploaded images and campaign data are stored only to support the publishing workflow.
 
-# 3. Start all services
-docker compose up --build
-```
+### Data Sharing
 
-Once the containers are running:
+PintAuto does not sell, rent, or share personal information with third parties.
 
-| Service      | URL                          |
-| ------------ | ---------------------------- |
-| **Frontend** | http://localhost:5173        |
-| **Backend**  | http://localhost:3001        |
-| **Database** | localhost:5432               |
+Information is shared only with Pinterest through the official Pinterest API when publishing content that the user has requested.
 
----
+### Security
 
-## 🏗 Architecture Overview
+We implement reasonable technical and organizational measures to protect stored information and API credentials.
 
-The application runs as **3 Docker containers** orchestrated by Docker Compose:
+### Third-Party Services
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Docker Network                       │
-│                                                         │
-│  ┌──────────────┐   ┌──────────────┐   ┌────────────┐  │
-│  │   Frontend   │──▶│   Backend    │──▶│  Database   │  │
-│  │  React/Vite  │   │   Express    │   │ PostgreSQL  │  │
-│  │  :5173       │   │  :3001       │   │  :5432      │  │
-│  └──────────────┘   └──────────────┘   └────────────┘  │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
+PintAuto integrates with the Pinterest API. Your use of Pinterest remains subject to Pinterest's own Privacy Policy and Terms of Service.
 
-- **Frontend** → React SPA that communicates with the backend API
-- **Backend** → REST API handling image uploads, pin management, and scheduling
-- **Database** → PostgreSQL for persistent storage of pins, boards, and schedules
+### User Control
 
----
+Users may disconnect their Pinterest account at any time. Once disconnected, stored access tokens can be removed from the application.
 
-## 📡 API Endpoints
+### Changes to This Policy
 
-| Method   | Endpoint               | Description                        |
-| -------- | ---------------------- | ---------------------------------- |
-| `GET`    | `/api/health`          | Health check                       |
-| `GET`    | `/api/pins`            | List all pins                      |
-| `POST`   | `/api/pins`            | Create a new pin (with image)      |
-| `GET`    | `/api/pins/:id`        | Get a single pin by ID             |
-| `PUT`    | `/api/pins/:id`        | Update a pin                       |
-| `DELETE` | `/api/pins/:id`        | Delete a pin                       |
-| `GET`    | `/api/boards`          | List all boards                    |
-| `POST`   | `/api/boards`          | Create a new board                 |
-| `POST`   | `/api/upload`          | Upload an image file               |
-| `GET`    | `/api/schedule`        | List scheduled uploads             |
-| `POST`   | `/api/schedule`        | Schedule a pin for upload           |
+This Privacy Policy may be updated periodically. Any changes will be reflected by updating the "Last Updated" date above.
 
----
+### Contact
 
-## 🔧 Development Setup
+If you have any questions regarding this Privacy Policy, please contact:
 
-### Hot Reload
+**Art Activities**
 
-Both frontend and backend support **hot reloading** in development:
-
-- **Frontend:** Vite HMR — edit files in `frontend/src/` and see changes instantly
-- **Backend:** Nodemon — edit files in `backend/src/` and the server auto-restarts
-
-Source directories are mounted as Docker volumes, so you edit files locally and changes are reflected in the containers immediately.
-
-### Useful Commands
-
-```bash
-# Start all services (foreground with logs)
-docker compose up --build
-
-# Start in detached mode (background)
-docker compose up --build -d
-
-# View logs for a specific service
-docker compose logs -f backend
-docker compose logs -f frontend
-docker compose logs -f db
-
-# Stop all services
-docker compose down
-
-# Stop and remove volumes (⚠ deletes database data)
-docker compose down -v
-
-# Rebuild a single service
-docker compose build backend
-
-# Open a shell inside a container
-docker compose exec backend sh
-docker compose exec db psql -U pinterest_user -d pinterest_manager
-```
-
-### Production Deployment
-
-```bash
-# Build and run with production configuration
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-```
-
-In production mode:
-- Frontend is built as static assets and served via **nginx** on port **80**
-- Backend runs with `node` directly (no nodemon)
-- Source volume mounts are removed
-- PostgreSQL port is not exposed to the host
-
----
-
-## 🌐 Environment Variables
-
-| Variable            | Default              | Description                            |
-| ------------------- | -------------------- | -------------------------------------- |
-| `POSTGRES_USER`     | `pinterest_user`     | PostgreSQL username                    |
-| `POSTGRES_PASSWORD` | `pinterest_pass`     | PostgreSQL password                    |
-| `POSTGRES_DB`       | `pinterest_manager`  | PostgreSQL database name               |
-| `POSTGRES_HOST`     | `db`                 | Database hostname (Docker service name)|
-| `POSTGRES_PORT`     | `5432`               | PostgreSQL port                        |
-| `BACKEND_PORT`      | `3001`               | Backend API server port                |
-| `NODE_ENV`          | `development`        | Node environment                       |
-| `VITE_API_URL`      | `http://localhost:3001` | Backend URL for frontend API calls  |
-| `FRONTEND_PORT`     | `5173`               | Frontend dev server port               |
-
----
-
-## 📁 Project Structure
-
-```
-pinterest-tool/
-├── docker-compose.yml          # Development orchestration
-├── docker-compose.prod.yml     # Production overrides
-├── .env                        # Environment variables (git-ignored)
-├── .env.example                # Environment template
-├── .gitignore
-├── README.md
-│
-├── backend/
-│   ├── Dockerfile              # Development image
-│   ├── Dockerfile.prod         # Production image
-│   ├── package.json
-│   └── src/
-│       ├── server.js           # Express app entry point
-│       ├── routes/             # API route handlers
-│       ├── models/             # Database models
-│       ├── middleware/         # Express middleware
-│       └── config/             # Database & app configuration
-│
-└── frontend/
-    ├── Dockerfile              # Development image
-    ├── Dockerfile.prod         # Production image (multi-stage)
-    ├── nginx.conf              # Nginx config for production SPA
-    ├── package.json
-    ├── index.html
-    └── src/
-        ├── App.jsx             # Root component
-        ├── main.jsx            # Entry point
-        ├── components/         # React components
-        ├── pages/              # Page-level components
-        └── services/           # API service layer
-```
-
----
-
-## 🗺 Future Roadmap
-
-- [ ] **Pinterest OAuth Integration** — Connect to Pinterest API for direct publishing
-- [ ] **Bulk Upload** — Upload and schedule multiple images at once
-- [ ] **Board Management** — Create, edit, and organize Pinterest boards
-- [ ] **Analytics Dashboard** — Track pin performance and engagement
-- [ ] **Image Editor** — Crop, resize, and add text overlays before uploading
-- [ ] **Scheduling Calendar** — Visual calendar view for scheduled pins
-- [ ] **Multi-Account Support** — Manage multiple Pinterest accounts
-- [ ] **AI Pin Descriptions** — Auto-generate SEO-friendly descriptions
-- [ ] **Webhook Notifications** — Get notified when scheduled pins are published
-- [ ] **Team Collaboration** — Invite team members with role-based permissions
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
+Email: adil.ait.2003@gmail.com
