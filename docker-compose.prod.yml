@@ -1,0 +1,39 @@
+version: "3.8"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Production overrides — run with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  # ── Database — no port exposure in production ───────────────────────
+  db:
+    restart: always
+    ports: []   # Do NOT expose Postgres to the host in production
+
+  # ── Backend — run with plain node, no source mounts ─────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    restart: always
+    volumes:
+      - ./backend/uploads:/app/uploads   # Keep uploaded images persistent
+    environment:
+      NODE_ENV: production
+    command: node src/server.js
+
+  # ── Frontend — multi-stage build served via nginx ───────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    restart: always
+    ports:
+      - "80:80"
+    volumes: []   # No source mounts in production
+    environment:
+      VITE_API_URL: http://localhost:3001
+
+volumes:
+  postgres_data:

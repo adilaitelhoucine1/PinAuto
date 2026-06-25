@@ -1,0 +1,18 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install production dependencies only
+COPY package*.json ./
+RUN npm ci --production
+
+# Copy application source
+COPY . .
+
+# Ensure uploads directory exists
+RUN mkdir -p uploads
+
+EXPOSE 3001
+
+# Run with plain node (no nodemon in production)
+CMD ["node", "src/server.js"]
